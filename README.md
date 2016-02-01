@@ -18,7 +18,7 @@ This seperats the editText input with comma while user is entering the value.
  ```
 
 #To get the input as plain Double Text
- Use the trimCommaOfString method of the same class like this
+ Use the ```trimCommaOfString()``` method of the same class like this
 ```
      NumberTextWatcherForThousand.trimCommaOfString(editText.getText().toString())
 ```
