@@ -13,11 +13,13 @@ This seperats the editText input with comma while user is entering the value.
 #How to use ?
  1. Just Download the java file and paste it in your project.
  2. Use this class in your EditText as follows
- 
-          ```editText.addTextChangedListener(new NumberTextWatcherForThousand(editText));```
+     ```
+         editText.addTextChangedListener(new NumberTextWatcherForThousand(editText));
+         
+         ```
 
 #To get the input as plain Double Text
  Use the trimCommaOfString method of the same class like this
- 
-          ```NumberTextWatcherForThousand.trimCommaOfString(editText.getText().toString())```
- 
+     ```
+     NumberTextWatcherForThousand.trimCommaOfString(editText.getText().toString())
+     ```
