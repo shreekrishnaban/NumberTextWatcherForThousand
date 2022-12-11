@@ -27,61 +27,121 @@ import java.util.StringTokenizer;
 public class NumberTextWatcherForThousand implements TextWatcher {
 
     EditText editText;
-    
+    int startPosition;
+
+    boolean isIncreasing = true;
+    long lastLength = 0;
+    String initialString = null;
 
     public NumberTextWatcherForThousand(EditText editText) {
         this.editText = editText;
+
 
     }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        startPosition = start;
 
+        if (count == 0) {
+            isIncreasing = true;
+        } else {
+            isIncreasing = false;
+        }
+
+        initialString = String.valueOf(s);
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
     }
 
     @Override
     public void afterTextChanged(Editable s) {
-        try
-        {
+
+
+        try {
+
+
             editText.removeTextChangedListener(this);
+
             String value = editText.getText().toString();
 
+            if (value.isEmpty()) {
 
-            if (value != null && !value.equals(""))
-            {
+                lastLength = 0;
 
-                if(value.startsWith(".")){ //adds "0." when only "." is pressed on begining of writting
+            } else {
+
+                if(value.startsWith(".")){
                     editText.setText("0.");
                 }
-                if(value.startsWith("0") && !value.startsWith("0.")){ 
-                    editText.setText(""); //Prevents "0" while starting but not "0."
+                if(value.startsWith("0") && !value.startsWith("0.")){
+                    editText.setText("");
 
                 }
 
 
-                String str = editText.getText().toString().replaceAll(",", "");
-                if (!value.equals(""))
-//                    Double.valueOf(str).doubleValue();
-                editText.setText(getDecimalFormat(str));
-                editText.setSelection(editText.getText().toString().length());
+
+
+                String str = editText.getText().toString().trim().replaceAll(",", "");
+
+
+                editText.setText(getDecimalFormattedString(str));
+
+
+                String stringFromEditText = editText.getText().toString().trim();
+
+
+
+                if (isIncreasing) {
+                    int increaseValue = 1;
+                    if (stringFromEditText.length() - lastLength  > 1) {
+                        increaseValue++;
+                    }
+                    editText.setSelection(startPosition + increaseValue);
+                } else {
+
+
+                    char delChar = initialString.charAt(startPosition);
+                    if (delChar == ',') {
+                        StringBuilder stringBuilder = new StringBuilder(stringFromEditText);
+                        stringBuilder.deleteCharAt(startPosition - 1);
+                        editText.setText(getDecimalFormattedString(stringBuilder.toString().replace(",", "")));
+                    }
+
+
+                    int decreaseValue = 0;
+                    if (lastLength - stringFromEditText.length()  > 1) {
+                        decreaseValue++;
+                    }
+
+
+                    editText.setSelection(startPosition - decreaseValue);
+
+                }
+
+
+
+                lastLength = stringFromEditText.length();
+
+
             }
+
             editText.addTextChangedListener(this);
-            return;
-        }
-        catch (Exception ex)
-        {
+
+        } catch (Exception ex) {
+
             ex.printStackTrace();
             editText.addTextChangedListener(this);
         }
 
+
     }
 
-    public static String getDecimalFormat(String value)
+    public static String getDecimalFormattedString(String value)
     {
         StringTokenizer lst = new StringTokenizer(value, ".");
         String str1 = value;
@@ -117,16 +177,6 @@ public class NumberTextWatcherForThousand implements TextWatcher {
         }
 
     }
-	
 
-	//Trims all the comma of the string and returns
-    public static String trimCommaOfString(String string) {
-//        String returnString;
-        if(string.contains(",")){
-            return string.replace(",","");}
-        else {
-            return string;
-        }
 
-    }
 }
